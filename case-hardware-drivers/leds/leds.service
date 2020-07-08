@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for case LEDs
+After=network.target
+
+[Service]
+Type=notify
+User=pi
+WorkingDirectory=/usr/local/bin/case-hardware-drivers/leds
+ExecStart=/usr/local/bin/case-hardware-drivers/leds/ledsd.py -c /etc/case-hardware-drivers/leds.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

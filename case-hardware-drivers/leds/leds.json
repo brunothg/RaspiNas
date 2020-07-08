@@ -1,0 +1,15 @@
+{
+    "deviceUrl": "/tmp/case-hardware-leds",
+    "leds": [
+        {
+            "name": "hdd",
+            "gpio": 13,
+            "defaultOn": false
+        },
+        {
+            "name": "power",
+            "gpio": 19,
+            "defaultOn": true
+        }
+    ]   
+}
