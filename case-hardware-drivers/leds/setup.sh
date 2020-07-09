@@ -7,6 +7,8 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
 fi
 
 mkdir -p /usr/local/bin/case-hardware-drivers/leds
+rm -R /usr/local/bin/case-hardware-drivers/leds
+mkdir -p /usr/local/bin/case-hardware-drivers/leds
 cp ./src/* /usr/local/bin/case-hardware-drivers/leds/
 chown -R root:root /usr/local/bin/case-hardware-drivers/leds
 
@@ -16,5 +18,8 @@ chown root:root /etc/case-hardware-drivers/leds.json
 
 cp ./leds.service /etc/systemd/system/case-hardware-drivers.leds.service
 chown root:root /etc/systemd/system/case-hardware-drivers.leds.service
-systemctl enable case-hardware-drivers.leds.service
+# systemctl enable case-hardware-drivers.leds.service
 systemctl start case-hardware-drivers.leds.service
+
+echo "Edit /etc/case-hardware-drivers/leds.json for configuration"
+echo "After configuration you can enable the service: systemctl enable case-hardware-drivers.leds.service"

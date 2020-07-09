@@ -7,49 +7,73 @@ import getopt
 import json
 import systemd.daemon
 import signal
+import socketserver
+import ledclienthandler
+import threading
 from gpiozero import LED
 
 class LedsService:
-    leds = {}
+    __leds = {}
 
     def __init__(self, config):
-        self.config = config
+        self.__config = config
         signal.signal(signal.SIGINT, self.__onSignal)
         signal.signal(signal.SIGTERM, self.__onSignal)
+
+    def getLed(self, name: str) -> LED:
+        return self.__leds[name]
 
     def start(self):
         print('Service started')
         systemd.daemon.notify("READY=1")
         self.__setupLeds()
-        self.__setupSocket()
+        self.__setupServer()
 
     def __setupLeds(self):
-        for ledConfig in self.config["leds"]:
-            if ledConfig["name"] in self.leds:
+        for ledConfig in self.__config["leds"]:
+            if ledConfig["name"] in self.__leds:
                 continue
             led = LED(pin=ledConfig["gpio"], initial_value=ledConfig["defaultOn"])
-            self.leds[ledConfig["name"]] = led
+            self.__leds[ledConfig["name"]] = led
 
-    def __setupSocket(self):
-        if os.path.exists(self.config["deviceUrl"]):
-                os.remove(self.config["deviceUrl"])
-        while True:
-            time.sleep(2)
+    def __setupServer(self):
+        if hasattr(self, '__ledserver'):
+            return
+        if os.path.exists(self.__config["deviceUrl"]):
+                os.remove(self.__config["deviceUrl"])
+        self.__ledserver = socketserver.ThreadingUnixStreamServer(self.__config["deviceUrl"], ledclienthandler.LedClientHandler)
+        with self.__ledserver as server:
+            server.ledservice = self
+
+            t = threading.Thread(target=server.serve_forever)
+            t.setDaemon(True)
+            t.start()
+            t.join()
 
     def __onSignal(self, signum, frame):
         self.stop()
 
     def stop(self):
+        print('Service stopping ...')
         systemd.daemon.notify("STOPPING=1")
         
-        if os.path.exists(self.config["deviceUrl"]):
-                os.remove(self.config["deviceUrl"])
-
-        for led in self.leds.values():
+        self.__tearDownServer()
+        
+        for led in self.__leds.values():
             led.close()
 
-        print('Service stopped')
         sys.exit(os.EX_OK)
+
+    def __tearDownServer(self):
+        if not hasattr(self, '__ledserver'):
+            return
+
+        server = self.__ledserver
+        del(self.__ledserver)
+        server.shutdown_request()
+
+        if os.path.exists(self.__config["deviceUrl"]):
+                os.remove(self.__config["deviceUrl"])
 
 
 

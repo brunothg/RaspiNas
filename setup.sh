@@ -21,6 +21,12 @@ disable_bluetooth () {
 	printf "\n# Disable Bluetooth\ndtoverlay=disable-bt" | sudo tee -a /boot/config.txt > /dev/null
 }
 
+install_led_service() {
+	cd ./case-hardware-drivers/leds
+	./setup.sh
+	cd ../../
+}
+
 
 
 # Check privileges
@@ -53,4 +59,13 @@ then
 	GPIO=${GPIO:-17}
 	activate_atx_powersupply "$GPIO"
 	unset GPIO
+fi
+
+# LED Service
+echo ""
+read -p "LED Service installieren? [y/n] " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	install_led_service
 fi

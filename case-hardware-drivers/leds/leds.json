@@ -1,5 +1,5 @@
 {
-    "deviceUrl": "/tmp/case-hardware-leds",
+    "deviceUrl": "/dev/case-hardware-leds",
     "leds": [
         {
             "name": "hdd",
