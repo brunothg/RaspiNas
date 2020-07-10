@@ -69,6 +69,19 @@ class FanClientHandler(socketserver.BaseRequestHandler):
                 fan.setAutoTemperatureTolerance(float(parameters[0]))
             elif action == 'get-autotolerance':
                 client.sendall((str(fan.getAutoTemperatureTolerance()) + '\n').encode('utf-8'))
+            elif action == 'set-smarttolerance':
+                fan.setSMARTTolerance(float(parameters[0]))
+            elif action == 'get-smarttolerance':
+                client.sendall((str(fan.getSMARTTolerance()) + '\n').encode('utf-8'))
+            elif action == 'get-smartref':
+                client.sendall((str(fan.getSMARTTemperatureValue()) + '\n').encode('utf-8'))
+            elif action == 'get-smartenabled':
+                client.sendall((str(fan.isSmartEnabled()) + '\n').encode('utf-8'))
+            elif action == 'set-smartenabled':
+                if parameters[0] in ('on', '1', 'true'):
+                    fan.setSmartEnabled(True)
+                elif parameters[0] in ('off', '0', 'false'):
+                    fan.setSmartEnabled(False)
             elif action == 'get-temperature':
                 client.sendall((str(fan.getTemperature()) + '\n').encode('utf-8'))
             else:

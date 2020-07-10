@@ -6,7 +6,9 @@
             "gpio": 26,
             "defaultMode": -1,
             "autoTemperature": 75.0,
-            "autoTemperatureTolerance": 10
+            "autoTemperatureTolerance": 10,
+            "enableSmart": true,
+            "smartTolerance": 10
         }
     ]   
 }

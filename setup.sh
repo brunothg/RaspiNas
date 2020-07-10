@@ -8,6 +8,7 @@ rpi_update () {
 install_dependencies () {
 	apt -y install python3-gpiozero
 	apt -y install python3-systemd
+	apt -y install smartmontools
 }
 
 activate_atx_powersupply () {
