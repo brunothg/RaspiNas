@@ -9,6 +9,7 @@ install_dependencies () {
 	apt -y install python3-gpiozero
 	apt -y install python3-systemd
 	apt -y install smartmontools
+	apt -y install wget
 }
 
 activate_atx_powersupply () {
@@ -35,6 +36,11 @@ install_firewall() {
 	ufw status
 }
 
+install_omv() {
+	echo "Install OMV..."
+	echo "You may need to press Enter (and enter your password), if nothing is going to happen"
+	wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | bash
+}
 
 
 # Check privileges
@@ -87,3 +93,5 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	install_led_service
 fi
+
+install_omv

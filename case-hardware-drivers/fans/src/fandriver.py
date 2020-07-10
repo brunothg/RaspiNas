@@ -115,7 +115,7 @@ class Fan(DigitalOutputDevice):
                         tempLineParts = re.split(r"\s+", tempLine)
                         value = float(tempLineParts[3])
                         threshold = float(tempLineParts[5])
-                        dif = (value - threshold) - 5
+                        dif = (value - threshold)
                         worst = min(dif, worst)
                 except subprocess.CalledProcessError as e:
                     # print(e)
