@@ -1,3 +1,5 @@
+![Lizenz](https://img.shields.io/github/license/brunothg/RaspiNas)
+
 RaspiNas
 ========
 
