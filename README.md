@@ -1,3 +1,7 @@
+![Lizenz](https://img.shields.io/github/license/brunothg/RaspiNas)
+![Codegröße](https://img.shields.io/github/languages/code-size/brunothg/RaspiNas)
+![Downloads](https://img.shields.io/github/downloads/brunothg/RaspiNas/total)
+
 RaspiNas
 ========
 
@@ -23,6 +27,8 @@ Diese Liste enthält die genutzten Komponenten. Kleinteile wie Kabel, Schrumpfsc
 * Adapter für Front Panel USB auf USB A (optional)
 * SSD + USB Adapter für das System (hier Crucial 120GB, bei den Adaptern auf kompatibilität achten - JMicron scheint aktuell nur mit quirks zu funktionieren)
 * Festplatten + USB Adapter (z.B. 2x4TB WD40EFRX)
+* 3D Drucker oder Sperrholz :) für Halterungen (z.B. ITX Halterung für den Raspberry Pi)
+* Verlängerungen für HDM und Ethernet zum herausführen der Anschlüsse aus dem Gehäuse (am besten schraubbar)
 * Die Komponenten für die Leiterplatine können dem Schaltplan entnommen werden
 
 
