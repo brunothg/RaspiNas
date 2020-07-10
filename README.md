@@ -1,5 +1,6 @@
 ![Lizenz](https://img.shields.io/github/license/brunothg/RaspiNas)
 ![Codegröße](https://img.shields.io/github/languages/code-size/brunothg/RaspiNas)
+![Downloads](https://img.shields.io/github/downloads/brunothg/RaspiNas/total)
 
 RaspiNas
 ========
