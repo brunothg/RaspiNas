@@ -27,6 +27,13 @@ install_led_service() {
 	cd ../../
 }
 
+install_firewall() {
+	apt -y install ufw
+	ufw allow ssh
+	ufw enable
+	ufw status
+}
+
 
 
 # Check privileges
@@ -37,6 +44,16 @@ fi
 
 rpi_update
 install_dependencies
+
+
+# Firewall
+echo ""
+read -p "Firewall installieren (UFW)? [y/n] " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	install_firewall
+fi
 
 
 # Bluetooth

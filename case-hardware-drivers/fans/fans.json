@@ -1,0 +1,12 @@
+{
+    "deviceUrl": "/dev/case-hardware-fans",
+    "fans": [
+        {
+            "name": "main",
+            "gpio": 26,
+            "defaultMode": -1,
+            "autoTemperature": 75.0,
+            "autoTemperatureTolerance": 10
+        }
+    ]   
+}

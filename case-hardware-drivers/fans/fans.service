@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for case Fans
+After=network.target
+
+[Service]
+Type=notify
+# User=pi
+WorkingDirectory=/usr/local/bin/case-hardware-drivers/fans
+ExecStart=/usr/local/bin/case-hardware-drivers/fans/fansd.py -c /etc/case-hardware-drivers/fans.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -19,7 +19,7 @@ chown root:root /etc/case-hardware-drivers/leds.json
 cp ./leds.service /etc/systemd/system/case-hardware-drivers.leds.service
 chown root:root /etc/systemd/system/case-hardware-drivers.leds.service
 # systemctl enable case-hardware-drivers.leds.service
-systemctl start case-hardware-drivers.leds.service
+# systemctl start case-hardware-drivers.leds.service
 
 echo "Edit /etc/case-hardware-drivers/leds.json for configuration"
 echo "After configuration you can enable the service: systemctl enable case-hardware-drivers.leds.service"
