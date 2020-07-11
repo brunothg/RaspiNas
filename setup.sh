@@ -29,13 +29,6 @@ install_led_service() {
 	cd ../../
 }
 
-install_firewall() {
-	apt -y install ufw
-	ufw allow ssh
-	ufw enable
-	ufw status
-}
-
 install_omv() {
 	echo "Install OMV..."
 	echo "You may need to press Enter (and enter your password), if nothing is going to happen"
@@ -51,16 +44,6 @@ fi
 
 rpi_update
 install_dependencies
-
-
-# Firewall
-echo ""
-read -p "Firewall installieren (UFW)? [y/n] " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-	install_firewall
-fi
 
 
 # Bluetooth
