@@ -10,6 +10,7 @@ install_dependencies () {
 	apt -y install python3-systemd
 	apt -y install smartmontools
 	apt -y install wget
+	apt -y install netcat-openbsd
 }
 
 activate_atx_powersupply () {
@@ -25,6 +26,18 @@ disable_bluetooth () {
 
 install_led_service() {
 	cd ./case-hardware-drivers/leds
+	./setup.sh
+	cd ../../
+}
+
+install_fan_service() {
+	cd ./case-hardware-drivers/fans
+	./setup.sh
+	cd ../../
+}
+
+install_powerbutton_service() {
+	cd ./case-hardware-drivers/power-button
 	./setup.sh
 	cd ../../
 }
@@ -75,6 +88,24 @@ echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	install_led_service
+fi
+
+# Fan Service
+echo ""
+read -p "Fan Service installieren? [y/n] " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	install_fan_service
+fi
+
+# Power Button Service
+echo ""
+read -p "Power Button Service installieren? [y/n] " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	install_powerbutton_service
 fi
 
 install_omv

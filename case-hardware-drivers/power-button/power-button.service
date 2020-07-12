@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for case Powerbutton
+Wants=case-hardware-drivers.leds.service
+
+[Service]
+Type=notify
+# User=pi
+WorkingDirectory=/usr/local/bin/case-hardware-drivers/power-button
+ExecStart=/usr/local/bin/case-hardware-drivers/power-button/power-buttond.py -c /etc/case-hardware-drivers/power-button.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

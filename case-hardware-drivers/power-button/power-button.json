@@ -1,0 +1,8 @@
+{
+    "ledsDeviceUrl": "/dev/case-hardware-leds",
+    "powerled":"power",
+    "shutdownCmd": "shutdown -hP now",
+    "powerbutton": {
+        "gpio": 3
+    }
+}
