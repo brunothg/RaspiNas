@@ -1,6 +1,7 @@
 [Unit]
 Description=Service for case Powerbutton
 Wants=case-hardware-drivers.leds.service
+After=case-hardware-drivers.leds.service
 
 [Service]
 Type=notify

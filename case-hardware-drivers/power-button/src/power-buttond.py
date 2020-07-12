@@ -24,6 +24,10 @@ class PowerButtonService:
         if self.__running:
             return
         print('Service started')
+        self.__setPowerLed(1)
+        time.sleep(1)
+        self.__setPowerLed(0)
+
         self.__running = True
         systemd.daemon.notify("READY=1")
         self.__setupPowerButton()
@@ -68,15 +72,18 @@ class PowerButtonService:
         if ledState:
             stateValue = 1
 
-        print("Setting led value")
-        ledProcess = subprocess.Popen(["nc", "-U", "/dev/case-hardware-leds"], stdin=subprocess.PIPE)
-        with ledProcess.stdin as ledStdin:
-            cmd = "set-state:" + self.__config["powerled"] + ":" + str(stateValue) + "\n"
-            print(cmd)
-            ledStdin.write(cmd.encode("utf-8"))
-        result = ledProcess.wait(wait)
-        if result != 0:
-            print("Error setting led value")
+        try:
+            print("Setting led value")
+            ledProcess = subprocess.Popen(["nc", "-U", "/dev/case-hardware-leds"], stdin=subprocess.PIPE)
+            with ledProcess.stdin as ledStdin:
+                cmd = "set-state:" + self.__config["powerled"] + ":" + str(stateValue) + "\n"
+                print(cmd)
+                ledStdin.write(cmd.encode("utf-8"))
+            result = ledProcess.wait(wait)
+            if result != 0:
+                print("Error setting led value")
+        except Exception as e:
+            print(e)
 
     def __onSignal(self, signum, frame):
         self.stop()
