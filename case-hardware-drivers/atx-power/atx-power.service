@@ -1,6 +1,6 @@
 [Unit]
 Description=Service for atx power
-Before=local-fs.target
+After=local-fs.target
 
 [Service]
 Type=notify
