@@ -28,7 +28,10 @@ class AtxPowerService:
 
         self.__atxPowerSwitch.on()
         time.sleep(10)
-        subprocess.call(shlex.split(self.__config["runAfterPowerUp"]))
+        try:
+            subprocess.call(shlex.split(self.__config["runAfterPowerUp"]))
+        except:
+            pass
 
         self.__running = True
         systemd.daemon.notify("READY=1")
