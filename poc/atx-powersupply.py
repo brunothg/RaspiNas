@@ -4,20 +4,19 @@ from gpiozero import DigitalOutputDevice
 from time import sleep
 import sys
 
-onTime = 20
+on = True
 if (len(sys.argv) > 1):
-    onTime = int(sys.argv[1])
+    on = bool(sys.argv[1])
 
 print('Setup ATX')
 atxPowerSupply = DigitalOutputDevice(17)
 
-print('Power on')
-atxPowerSupply.on()
+if on:
+    print('Power on')
+    atxPowerSupply.on()
+else:
+    print('Power off')
+    atxPowerSupply.off()
 
-sleep(onTime)
-
-print('Power off')
-atxPowerSupply.off()
-
-print('Bye')
-atxPowerSupply.close()
+while True:
+    sleep(2)

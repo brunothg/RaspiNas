@@ -1,0 +1,13 @@
+[Unit]
+Description=Service for atx power
+Before=local-fs.target
+
+[Service]
+Type=notify
+# User=pi
+WorkingDirectory=/usr/local/bin/case-hardware-drivers/atx-power
+ExecStart=/usr/local/bin/case-hardware-drivers/atx-power/atxpowerd.py -c /etc/case-hardware-drivers/atx-power.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
