@@ -13,6 +13,10 @@ class Fan(DigitalOutputDevice):
     __speedThread = None
     __smartEnabled = True
     __smartTolerance = 10
+    __smartThreshold = 0
+    __smartMaxTemp = 50
+    __smartCooldownTemp = 40
+    __smartUpdateCycle = 10
 
     def __init__(self, pin=None, active_high=True, initial_value=False, pin_factory=None):
         super().__init__(pin=pin, active_high=active_high, initial_value=initial_value, pin_factory=pin_factory)
@@ -28,9 +32,11 @@ class Fan(DigitalOutputDevice):
 
         tempState = False
         smartState = False
+        smartTempState = False
 
         smartCounter = 0
-        smartValue = self.getSMARTTemperatureValue()
+        smartValue = (self.getSMARTTemperatureValue() - self.__smartThreshold)
+        smartTemp = self.getSMARTTemperatureCelsius()
         while not self.__speedThread.stopping.wait(1):
 
             if self.getTemperature() > (self.getAutoTemperature() + addTemp):
@@ -47,13 +53,19 @@ class Fan(DigitalOutputDevice):
                 smartState = False
                 addSmart = 0
 
-            if smartCounter > 10:
+            if smartTemp >= self.__smartMaxTemp:
+                smartTempState = True
+            elif smartTemp <= self.__smartCooldownTemp:
+                smartTempState = False
+
+            if smartCounter > self.__smartUpdateCycle:
                 smartCounter = 0
-                smartValue = self.getSMARTTemperatureValue()
+                smartValue = (self.getSMARTTemperatureValue()  - self.__smartThreshold)
+                smartTemp = self.getSMARTTemperatureCelsius()
             else:
                 smartCounter = smartCounter + 1
 
-            if tempState or smartState:
+            if tempState or smartState or smartTempState:
                 self.__son()
             else:
                 self.__soff()
@@ -123,11 +135,36 @@ class Fan(DigitalOutputDevice):
         
         return worst
 
+    def getSMARTTemperatureCelsius(self):
+        worst = 0
+
+        if self.isSmartEnabled():
+            disks = self.__getHDDs()
+            for disk in disks:
+                try:
+                    response = subprocess.check_output(["smartctl", "-A", "/dev/" + disk]).decode('utf-8')
+                    tempLines = list(filter(lambda x: x.startswith('194'), response.splitlines()))
+                    for tempLine in tempLines:
+                        tempLineParts = re.split(r"\s+", tempLine)
+                        value = float(tempLineParts[9])
+                        worst = max(value, worst)
+                except subprocess.CalledProcessError as e:
+                    # print(e)
+                    pass
+        
+        return worst
+
     def setSMARTTolerance(self, tolerance):
         self.__smartTolerance = abs(tolerance)
 
     def getSMARTTolerance(self):
         return self.__smartTolerance
+
+    def setSMARTTreshold(self, treshold):
+        self.__smartThreshold = abs(treshold)
+
+    def getSMARTTreshold(self):
+        return self.__smartThreshold
 
     def setAutoTemperature(self, autoTemp):
         self.__autoTemperature = autoTemp
@@ -146,6 +183,24 @@ class Fan(DigitalOutputDevice):
 
     def isSmartEnabled(self):
         return self.__smartEnabled
+
+    def setSMARTMaxTemperature(self, maxTemperature):
+        self.__smartMaxTemp = abs(maxTemperature)
+
+    def getSMARTMaxTemperature(self):
+        return self.__smartMaxTemp
+
+    def setSMARTCooldownTemperature(self, cooldownTemperature):
+        self.__smartCooldownTemp = abs(cooldownTemperature)
+
+    def getSMARTCooldownTemperature(self):
+        return self.__smartCooldownTemp
+
+    def setSMARTUpdateCycleCount(self, cycleCount):
+        self.__smartUpdateCycle = cycleCount
+
+    def getSMARTUpdateCycleCount(self):
+        return self.__smartUpdateCycle
 
     def close(self):
         self.__stopControlSpeed()

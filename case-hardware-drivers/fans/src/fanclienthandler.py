@@ -75,6 +75,8 @@ class FanClientHandler(socketserver.BaseRequestHandler):
                 client.sendall((str(fan.getSMARTTolerance()) + '\n').encode('utf-8'))
             elif action == 'get-smartref':
                 client.sendall((str(fan.getSMARTTemperatureValue()) + '\n').encode('utf-8'))
+            elif action == 'get-smartcelsius':
+                client.sendall((str(fan.getSMARTTemperatureCelsius()) + '\n').encode('utf-8'))
             elif action == 'get-smartenabled':
                 client.sendall((str(fan.isSmartEnabled()) + '\n').encode('utf-8'))
             elif action == 'set-smartenabled':

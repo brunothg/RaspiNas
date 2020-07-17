@@ -8,7 +8,11 @@
             "autoTemperature": 75.0,
             "autoTemperatureTolerance": 10,
             "enableSmart": true,
-            "smartTolerance": 10
+            "smartCycleCount": 10,
+            "smartTolerance": 10,
+            "smartThreshold ": 1,
+            "smartMaxTemperature": 50,
+            "smartCooldownTemperature": 40
         }
     ]   
 }

@@ -17,11 +17,7 @@ activate_atx_powersupply () {
 	local ATX_PIN=$1
 	echo ""
 	echo "activate atx powersupply with gpio $ATX_PIN"
-	printf "\n# ATX Powersupply\ngpio=$ATX_PIN=op,dl" | sudo tee -a /boot/config.txt > /dev/null
-
-	cd ./case-hardware-drivers/atx-power
-	./setup.sh
-	cd ../../
+	printf "\n# ATX Powersupply\ngpio=$ATX_PIN=op,dh" | sudo tee -a /boot/config.txt > /dev/null
 }
 
 disable_bluetooth () {

@@ -36,6 +36,12 @@ class FansService:
             fan = fandriver.Fan(pin=fanConfig["gpio"])
             fan.setAutoTemperature(fanConfig["autoTemperature"])
             fan.setAutoTemperatureTolerance(fanConfig["autoTemperatureTolerance"])
+            fan.setSmartEnabled(fanConfig["enableSmart"])
+            fan.setSMARTUpdateCycleCount(fanConfig["smartCycleCount"])
+            fan.setSMARTTolerance(fanConfig["smartTolerance"])
+            fan.setSMARTTreshold(fanConfig["smartThreshold"])
+            fan.setSMARTMaxTemperature(fanConfig["smartMaxTemperature"])
+            fan.setSMARTCooldownTemperature(fanConfig["smartCooldownTemperature"])
             if fanConfig["defaultMode"] < 0:
                 fan.auto()
             elif fanConfig["defaultMode"] == 0:
