@@ -32,7 +32,7 @@ class Fan(DigitalOutputDevice):
         smartTempState = False
 
         smartCounter = 0
-        smartValue = (self.getSMARTTemperatureValue() - self.__smartThreshold)
+        smartValue = (self.getSMARTTemperatureValue() - self.getSMARTTreshold())
         smartTemp = self.getSMARTTemperatureCelsius()
         while not self.__speedThread.stopping.wait(1):
 
@@ -92,14 +92,13 @@ class Fan(DigitalOutputDevice):
 
     def __getHDDs(self):
         try:
-            response = subprocess.check_output(["lsblk"])
+            response = subprocess.check_output(["smartctl", "--scan"])
             
             disks = list()
             for diskline in response.splitlines():
                 diskline = diskline.strip()
                 disklineparts = diskline.decode('utf-8').split(' ')
-                if disklineparts[len(disklineparts)-1] == 'disk':
-                    disks.append(disklineparts[0])
+                disks.append(disklineparts[0])
 
             return disks
         except Exception as e:
