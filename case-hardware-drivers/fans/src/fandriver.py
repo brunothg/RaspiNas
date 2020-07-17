@@ -8,7 +8,7 @@ import re
 
 class Fan(DigitalOutputDevice):
     __autoTemperature = 75.0
-    __autoTemperatureTolerance = 5
+    __autoCooldownTemperature = 65
     __cpuTemp = CPUTemperature()
     __speedThread = None
     __smartEnabled = True
@@ -27,9 +27,6 @@ class Fan(DigitalOutputDevice):
              self.__speedThread.start()
 
     def __controlSpeed(self):
-        addTemp = 0
-        addSmart = 0
-
         tempState = False
         smartState = False
         smartTempState = False
@@ -39,28 +36,24 @@ class Fan(DigitalOutputDevice):
         smartTemp = self.getSMARTTemperatureCelsius()
         while not self.__speedThread.stopping.wait(1):
 
-            if self.getTemperature() > (self.getAutoTemperature() + addTemp):
+            if self.getTemperature() >= self.getAutoTemperature():
                 tempState = True
-                addTemp = -1 * self.getAutoTemperatureTolerance()
-            elif self.getTemperature() < (self.getAutoTemperature() + addTemp):
+            elif self.getTemperature() <= self.getAutoCooldownTemperature():
                 tempState = False
-                addTemp = +1 * self.getAutoTemperatureTolerance()
 
-            if smartValue < addSmart:
+            if smartValue <= 0:
                 smartState = True
-                addSmart = self.getSMARTTolerance()
-            elif smartValue > addSmart:
+            elif smartValue >= self.getSMARTTolerance():
                 smartState = False
-                addSmart = 0
 
-            if smartTemp >= self.__smartMaxTemp:
+            if smartTemp >= self.getSMARTMaxTemperature():
                 smartTempState = True
-            elif smartTemp <= self.__smartCooldownTemp:
+            elif smartTemp <= self.getSMARTCooldownTemperature():
                 smartTempState = False
 
-            if smartCounter > self.__smartUpdateCycle:
+            if smartCounter > self.getSMARTUpdateCycleCount():
                 smartCounter = 0
-                smartValue = (self.getSMARTTemperatureValue()  - self.__smartThreshold)
+                smartValue = (self.getSMARTTemperatureValue()  - self.getSMARTTreshold())
                 smartTemp = self.getSMARTTemperatureCelsius()
             else:
                 smartCounter = smartCounter + 1
@@ -172,11 +165,11 @@ class Fan(DigitalOutputDevice):
     def getAutoTemperature(self):
         return self.__autoTemperature
 
-    def setAutoTemperatureTolerance(self, autoTempTolerance):
-        self.__autoTemperatureTolerance =  abs(autoTempTolerance)
+    def setAutoCooldownTemperature(self, autoCooldownTolerance):
+        self.__autoCooldownTemperature =  abs(autoCooldownTolerance)
 
-    def getAutoTemperatureTolerance(self):
-        return self.__autoTemperatureTolerance
+    def getAutoCooldownTemperature(self):
+        return self.__autoCooldownTemperature
 
     def setSmartEnabled(self, enabled):
         self.__smartEnabled = enabled

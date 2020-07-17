@@ -65,10 +65,10 @@ class FanClientHandler(socketserver.BaseRequestHandler):
                 fan.setAutoTemperature(float(parameters[0]))
             elif action == 'get-autotemp':
                 client.sendall((str(fan.getAutoTemperature()) + '\n').encode('utf-8'))
-            elif action == 'set-autotolerance':
-                fan.setAutoTemperatureTolerance(float(parameters[0]))
-            elif action == 'get-autotolerance':
-                client.sendall((str(fan.getAutoTemperatureTolerance()) + '\n').encode('utf-8'))
+            elif action == 'set-autocooldown':
+                fan.setAutoCooldownTemperature(float(parameters[0]))
+            elif action == 'get-autocooldown':
+                client.sendall((str(fan.getAutoCooldownTemperature()) + '\n').encode('utf-8'))
             elif action == 'set-smarttolerance':
                 fan.setSMARTTolerance(float(parameters[0]))
             elif action == 'get-smarttolerance':
