@@ -32,8 +32,7 @@ class Fan(DigitalOutputDevice):
         smartTempState = False
 
         smartCounter = 0
-        smartValue = (self.getSMARTTemperatureValue() - self.getSMARTTreshold())
-        smartTemp = self.getSMARTTemperatureCelsius()
+        smartValue, smartTemp = self.getSMARTValues()
         while not self.__speedThread.stopping.wait(1):
 
             if self.getTemperature() >= self.getAutoTemperature():
@@ -41,9 +40,9 @@ class Fan(DigitalOutputDevice):
             elif self.getTemperature() <= self.getAutoCooldownTemperature():
                 tempState = False
 
-            if smartValue <= 0:
+            if (smartValue - self.getSMARTTreshold()) <= 0:
                 smartState = True
-            elif smartValue >= self.getSMARTTolerance():
+            elif (smartValue - self.getSMARTTreshold()) >= self.getSMARTTolerance():
                 smartState = False
 
             if smartTemp >= self.getSMARTMaxTemperature():
@@ -53,8 +52,7 @@ class Fan(DigitalOutputDevice):
 
             if smartCounter > self.getSMARTUpdateCycleCount():
                 smartCounter = 0
-                smartValue = (self.getSMARTTemperatureValue()  - self.getSMARTTreshold())
-                smartTemp = self.getSMARTTemperatureCelsius()
+                smartValue, smartTemp = self.getSMARTValues()
             else:
                 smartCounter = smartCounter + 1
 
@@ -106,8 +104,9 @@ class Fan(DigitalOutputDevice):
             pass
         return []
 
-    def getSMARTTemperatureValue(self):
-        worst = 255
+    def getSMARTValues(self):
+        worstValue = 255
+        worstTemperature = 0
 
         if self.isSmartEnabled():
             disks = self.__getHDDs()
@@ -117,34 +116,25 @@ class Fan(DigitalOutputDevice):
                     tempLines = list(filter(lambda x: x.startswith('194'), response.splitlines()))
                     for tempLine in tempLines:
                         tempLineParts = re.split(r"\s+", tempLine)
+                        
                         value = float(tempLineParts[3])
                         threshold = float(tempLineParts[5])
                         dif = (value - threshold)
-                        worst = min(dif, worst)
+                        worstValue = min(dif, worstValue)
+
+                        temperature = float(tempLineParts[9])
+                        worstTemperature = max(temperature, worstTemperature)
                 except subprocess.CalledProcessError as e:
                     # print(e)
                     pass
         
-        return worst
+        return (worstValue, worstTemperature)
+
+    def getSMARTTemperatureValue(self):
+        return self.getSMARTValues()[0]
 
     def getSMARTTemperatureCelsius(self):
-        worst = 0
-
-        if self.isSmartEnabled():
-            disks = self.__getHDDs()
-            for disk in disks:
-                try:
-                    response = subprocess.check_output(["smartctl", "-A", "/dev/" + disk]).decode('utf-8')
-                    tempLines = list(filter(lambda x: x.startswith('194'), response.splitlines()))
-                    for tempLine in tempLines:
-                        tempLineParts = re.split(r"\s+", tempLine)
-                        value = float(tempLineParts[9])
-                        worst = max(value, worst)
-                except subprocess.CalledProcessError as e:
-                    # print(e)
-                    pass
-        
-        return worst
+        return self.getSMARTValues()[1]
 
     def setSMARTTolerance(self, tolerance):
         self.__smartTolerance = abs(tolerance)
