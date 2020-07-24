@@ -7,13 +7,14 @@ services:
     restart: always
     volumes:
       - nextcloud:/var/www/html
-      - nextcloud_data:/var/www/html/data
+      - nextcloud_data:/media/nextcloud/data
       - nextcloud_config:/var/www/html/config
       - nextcloud_db:/var/run/mysqld
     ports:
       - '127.0.0.1:9001:9000'
     environment:
       - OVERWRITEWEBROOT=/cloud
+      - NEXTCLOUD_DATA_DIR=/media/nextcloud/data
 
 volumes:
   nextcloud:

@@ -2,6 +2,12 @@ FROM nextcloud:fpm-alpine
 
 RUN set -ex; \
     \
+    mkdir -p /media/nextcloud/data; \
+    chown -R www-data:www-data /media/nextcloud/data; \
+    chmod 770 /media/nextcloud/data;
+
+RUN set -ex; \
+    \
     apk add --no-cache \
 #       ffmpeg \
         imagemagick \
