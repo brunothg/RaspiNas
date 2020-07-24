@@ -15,6 +15,7 @@ services:
     environment:
       - OVERWRITEWEBROOT=/cloud
       - NEXTCLOUD_DATA_DIR=/media/nextcloud/data
+      - TRUSTED_PROXIES=localhost,127.0.0.1
 
 volumes:
   nextcloud:

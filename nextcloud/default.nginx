@@ -43,14 +43,19 @@ server {
 	# Add index.php to the list if you are using PHP
 	# index index.html index.htm index.nginx-debian.html;
 
-	server_name localhost;
+	server_name s-nas s-nas.fritz.box 10.0.0.10;
 
 	location /cloud/ {
-		proxy_pass http://127.0.0.1:8081/; # To nextcloud site	
+		proxy_pass http://127.0.0.1:8081/;	
 		proxy_set_header Host $host;
         	proxy_set_header X-Real-IP $remote_addr;
         	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        	proxy_set_header HTTP_X_FORWARDED-FOR $proxy_add_x_forwarded_for;
         	proxy_set_header X-Forwarded-Proto $scheme;	
+        	proxy_set_header HTTP_X_FORWARDED_PROTO $scheme;	
+		proxy_set_header X-Forwarded-Host $host:$server_port;
+		proxy_set_header HTTP_X_FORWAREDED_HOST $host:$server_port;
+		proxy_set_header X-Forwarded-Server $host;
 		add_header Front-End-Https on;
 	 	add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 	}
@@ -100,16 +105,21 @@ server {
     listen 443 default_server;
     listen [::]:443 default_server;
 
-    server_name extern.domain.de;
+    server_name s-nas.mhdhuejhfcnspbpd.myfritz.net;
     gzip off;
     server_tokens off;
 
     location /cloud/ {
-	proxy_pass http://127.0.0.1:8081/; # To nextcloud site	
+	proxy_pass http://127.0.0.1:8081/;	
 	proxy_set_header Host $host;
        	proxy_set_header X-Real-IP $remote_addr;
        	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       	proxy_set_header HTTP_X_FORWARDED-FOR $proxy_add_x_forwarded_for;
        	proxy_set_header X-Forwarded-Proto $scheme;	
+       	proxy_set_header HTTP_X_FORWARDED_PROTO $scheme;	
+	proxy_set_header X-Forwarded-Host $host:$server_port;
+	proxy_set_header HTTP_X_FORWAREDED_HOST $host:$server_port;
+	proxy_set_header X-Forwarded-Server $host;
 	add_header Front-End-Https on;
     	add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     }
@@ -122,13 +132,15 @@ server {
 	deny all;
     }
 
+    ssl_certificate /etc/letsencrypt/live/s-nas.mhdhuejhfcnspbpd.myfritz.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/s-nas.mhdhuejhfcnspbpd.myfritz.net/privkey.pem; # managed by Certbot
 }
 
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    server_name localhost;
+    server_name s-nas s-nas.fritz.box 10.0.0.10 s-nas.mhdhuejhfcnspbpd.myfritz.net;
 
     return 302 https://$host$request_uri;
 }
